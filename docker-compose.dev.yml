@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mongodb:
+    container_name: librechat-mongodb-dev
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    command: mongod --noauth
+
+  redis:
+    container_name: librechat-redis-dev
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  meilisearch:
+    container_name: librechat-meilisearch-dev
+    image: getmeili/meilisearch:v1.12.3
+    restart: unless-stopped
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_HOST=http://0.0.0.0:7700
+      - MEILI_NO_ANALYTICS=true
+    volumes:
+      - meilisearch_data:/meili_data
+
+volumes:
+  mongodb_data:
+  redis_data:
+  meilisearch_data:
