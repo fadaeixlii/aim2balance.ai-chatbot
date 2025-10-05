@@ -8,9 +8,9 @@ export interface ITransaction extends Document {
   model?: string;
   context?: string;
   valueKey?: string;
-  rate?: number; // Multiplier used for calculation
-  rawAmount?: number; // Raw token count
-  tokenValue?: number; // Calculated cost in token credits
+  rate?: number;
+  rawAmount?: number;
+  tokenValue?: number;
   inputTokens?: number;
   writeTokens?: number;
   readTokens?: number;
