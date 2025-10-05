@@ -46,6 +46,8 @@ This project is documented across several files, categorized by their purpose.
 
 ### 3. Feature Analysis & Setup Guides
 
+- **[Configuration Guide](./configuration_guide.md)**: Complete reference for all LibreChat configuration options (.env and librechat.yaml), with simple and detailed explanations for each setting.
+- **[Getting Free API Keys](./getting_free_api_keys.md)**: Step-by-step guide to obtain free API keys from Google Gemini, OpenRouter, Groq, and Anthropic for development and testing.
 - **[Authentication Flow](./authentication_flow.md)**: Details on the user authentication and session management process.
 - **[Social Logins Setup](./social_logins_setup.md)**: Guide for enabling social logins (Google, GitHub, etc.).
 - **[Email & Notifications Setup](./email_and_notifications_setup.md)**: Guide for configuring transactional emails (Mailgun/SMTP).
