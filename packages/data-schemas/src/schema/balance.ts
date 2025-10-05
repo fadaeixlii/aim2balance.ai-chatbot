@@ -8,7 +8,9 @@ const balanceSchema = new Schema<t.IBalance>({
     index: true,
     required: true,
   },
-  // 1000 tokenCredits = 1 mill ($0.001 USD)
+  // aim2balance.ai: Primary currency is EUR
+  // 1000 tokenCredits = €0.001 EUR (changed from USD)
+  // We keep tokenCredits for backward compatibility but it now represents EUR
   tokenCredits: {
     type: Number,
     default: 0,

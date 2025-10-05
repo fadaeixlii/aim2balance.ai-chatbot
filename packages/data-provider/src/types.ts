@@ -646,6 +646,10 @@ export type TUpdateFeedbackResponse = {
 
 export type TBalanceResponse = {
   tokenCredits: number;
+  // aim2balance.ai: Dual currency display
+  balanceEUR: number; // Balance in EUR (primary currency)
+  balanceUSD: number; // Balance in USD (for display)
+  exchangeRate: number; // Current USD/EUR exchange rate
   // Automatic refill settings
   autoRefillEnabled: boolean;
   refillIntervalValue?: number;

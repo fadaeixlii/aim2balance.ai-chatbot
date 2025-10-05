@@ -1,6 +1,7 @@
 const { logger } = require('@librechat/data-schemas');
 const { getMultiplier, getCacheMultiplier } = require('./tx');
 const { Transaction, Balance } = require('~/db/models');
+const PricingService = require('~/server/services/PricingService');
 
 const cancelRate = 1.15;
 
@@ -136,8 +137,8 @@ const updateBalance = async ({ user, incrementValue, setValues }) => {
   );
 };
 
-/** Method to calculate and set the tokenValue for a transaction */
-function calculateTokenValue(txn) {
+/** Method to calculate token value for a transaction */
+async function calculateTokenValue(txn) {
   if (!txn.valueKey || !txn.tokenType) {
     txn.tokenValue = txn.rawAmount;
   }
@@ -145,15 +146,47 @@ function calculateTokenValue(txn) {
   const multiplier = Math.abs(getMultiplier({ valueKey, tokenType, model, endpointTokenConfig }));
   txn.rate = multiplier;
   txn.tokenValue = txn.rawAmount * multiplier;
+
   if (txn.context && txn.tokenType === 'completion' && txn.context === 'incomplete') {
     txn.tokenValue = Math.ceil(txn.tokenValue * cancelRate);
     txn.rate *= cancelRate;
+  }
+
+  // aim2balance.ai: Calculate EUR cost (primary currency)
+  // We calculate both USD and EUR for transparency
+  if (txn.rawAmount && txn.rate) {
+    const tokens = Math.abs(txn.rawAmount);
+    const rateUSD = txn.rate; // Rate is in USD per 1M tokens
+
+    try {
+      const costDetails = await PricingService.calculateCost({
+        tokens,
+        rateUSD,
+        provider: txn.provider,
+        model: txn.model,
+      });
+
+      txn.costUSD = costDetails.costUSD;
+      txn.costEUR = costDetails.costEUR;
+      txn.exchangeRate = costDetails.exchangeRate;
+      txn.providerMarkup = costDetails.providerMarkup;
+      txn.rebalancingFee = costDetails.rebalancingFee;
+
+      // Update tokenValue to use EUR (1M credits = €1)
+      txn.tokenValue =
+        PricingService.eurToTokenCredits(costDetails.costEUR) * Math.sign(txn.rawAmount);
+    } catch (error) {
+      logger.error('[calculateTokenValue] Failed to calculate EUR cost:', error);
+      // Continue with USD-based tokenValue if EUR calculation fails
+    }
   }
 }
 
 /**
  * New static method to create an auto-refill transaction that does NOT trigger a balance update.
- * @param {object} txData - Transaction data.
+ * @async
+ * @function
+ * @param {Object} txData - The function parameters.
  * @param {string} txData.user - The user ID.
  * @param {string} txData.tokenType - The type of token.
  * @param {string} txData.context - The context of the transaction.
@@ -166,7 +199,7 @@ async function createAutoRefillTransaction(txData) {
   }
   const transaction = new Transaction(txData);
   transaction.endpointTokenConfig = txData.endpointTokenConfig;
-  calculateTokenValue(transaction);
+  await calculateTokenValue(transaction);
   await transaction.save();
 
   const balanceResponse = await updateBalance({
@@ -200,7 +233,7 @@ async function createTransaction(_txData) {
 
   const transaction = new Transaction(txData);
   transaction.endpointTokenConfig = txData.endpointTokenConfig;
-  calculateTokenValue(transaction);
+  await calculateTokenValue(transaction);
 
   await transaction.save();
   if (!balance?.enabled) {

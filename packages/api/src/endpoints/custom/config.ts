@@ -41,6 +41,25 @@ export function loadCustomEndpointsConfig(
       const resolvedApiKey = extractEnvVariable(apiKey ?? '');
       const resolvedBaseURL = extractEnvVariable(baseURL ?? '');
 
+      // aim2balance.ai: Skip custom endpoints without valid API keys
+      // Only show endpoints where admin has configured actual API keys
+      // This prevents showing endpoints that users cannot use
+      const hasValidApiKey = resolvedApiKey && !isUserProvided(resolvedApiKey);
+      
+      if (!hasValidApiKey) {
+        // Commented out for potential reversal: Allow showing user-provided custom endpoints
+        // To re-enable user-provided custom endpoints, uncomment the code below:
+        // customEndpointsConfig[name] = {
+        //   type: EModelEndpoint.custom,
+        //   userProvide: isUserProvided(resolvedApiKey),
+        //   userProvideURL: isUserProvided(resolvedBaseURL),
+        //   customParams: customParams as TConfig['customParams'],
+        //   modelDisplayLabel,
+        //   iconURL,
+        // };
+        continue;
+      }
+
       customEndpointsConfig[name] = {
         type: EModelEndpoint.custom,
         userProvide: isUserProvided(resolvedApiKey),

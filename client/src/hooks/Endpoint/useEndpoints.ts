@@ -65,11 +65,26 @@ export const useEndpoints = ({
       if (includedEndpoints.size > 0 && !includedEndpoints.has(endpoints[i])) {
         continue;
       }
+
+      // aim2balance.ai: Filter out endpoints that require user-provided keys
+      // Only show endpoints where the admin has configured API keys
+      // This prevents showing endpoints that users cannot use
+      const endpointConfig = endpointsConfig?.[endpoints[i]];
+      const requiresUserKey = endpointConfig?.userProvide === true;
+
+      // Skip endpoints that require user-provided keys (no admin key configured)
+      if (requiresUserKey) {
+        // Commented out for potential reversal: Allow showing user-provided endpoints
+        // To re-enable user-provided endpoints, uncomment the line below:
+        // result.push(endpoints[i]);
+        continue;
+      }
+
       result.push(endpoints[i]);
     }
 
     return result;
-  }, [endpoints, hasAgentAccess, includedEndpoints, interfaceConfig.modelSelect]);
+  }, [endpoints, hasAgentAccess, includedEndpoints, interfaceConfig.modelSelect, endpointsConfig]);
 
   const endpointRequiresUserKey = useCallback(
     (ep: string) => {

@@ -128,9 +128,12 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
             className="group flex w-full flex-shrink cursor-pointer items-center justify-between rounded-xl px-1 py-1 text-sm"
           >
             {renderIconLabel()}
-            {isUserProvided && (
+            {/* aim2balance.ai: Commented out user-provided key settings button */}
+            {/* Users cannot provide their own API keys in aim2balance.ai strategy */}
+            {/* To re-enable, uncomment the lines below: */}
+            {/* {isUserProvided && (
               <SettingsButton endpoint={endpoint} handleOpenKeyDialog={handleOpenKeyDialog} />
-            )}
+            )} */}
           </div>
         }
       >
@@ -156,9 +159,12 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
         <div className="group flex w-full min-w-0 items-center justify-between">
           {renderIconLabel()}
           <div className="flex items-center gap-2">
-            {endpointRequiresUserKey(endpoint.value) && (
+            {/* aim2balance.ai: Commented out user-provided key settings button */}
+            {/* Users cannot provide their own API keys in aim2balance.ai strategy */}
+            {/* To re-enable, uncomment the lines below: */}
+            {/* {endpointRequiresUserKey(endpoint.value) && (
               <SettingsButton endpoint={endpoint} handleOpenKeyDialog={handleOpenKeyDialog} />
-            )}
+            )} */}
             {selectedEndpoint === endpoint.value && (
               <svg
                 width="16"

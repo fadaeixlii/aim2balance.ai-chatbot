@@ -7,6 +7,7 @@ import { useGetStartupConfig, useGetUserBalance } from '~/data-provider';
 import FilesView from '~/components/Chat/Input/Files/FilesView';
 import { useAuthContext } from '~/hooks/AuthContext';
 import { useLocalize } from '~/hooks';
+import BalanceDisplay from './BalanceDisplay';
 import Settings from './Settings';
 import store from '~/store';
 
@@ -53,9 +54,9 @@ function AccountSettings() {
         <DropdownMenuSeparator />
         {startupConfig?.balance?.enabled === true && balanceQuery.data != null && (
           <>
-            <div className="text-token-text-secondary ml-3 mr-2 py-2 text-sm" role="note">
-              {localize('com_nav_balance')}:{' '}
-              {new Intl.NumberFormat().format(Math.round(balanceQuery.data.tokenCredits))}
+            <div className="ml-3 mr-2 py-2" role="note">
+              <div className="mb-1 text-xs text-text-secondary">{localize('com_nav_balance')}</div>
+              <BalanceDisplay balance={balanceQuery.data} />
             </div>
             <DropdownMenuSeparator />
           </>
