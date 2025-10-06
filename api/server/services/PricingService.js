@@ -2,10 +2,10 @@ const { logger } = require('~/config');
 
 /**
  * PricingService - EUR-based pricing calculations for aim2balance.ai
- * 
+ *
  * Primary currency: EUR
  * Display: Both USD and EUR
- * 
+ *
  * Calculation flow:
  * 1. Get base USD cost from provider pricing
  * 2. Apply provider markup (+15%)
@@ -18,12 +18,12 @@ class PricingService {
     this.exchangeRate = null;
     this.lastFetch = null;
     this.CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-    
+
     // Configuration from environment variables
     this.PROVIDER_MARKUP = parseFloat(process.env.PROVIDER_MARKUP || '0.15'); // 15% default
     this.REBALANCING_FEE = parseFloat(process.env.REBALANCING_FEE || '0.025'); // 2.5% default
     this.FALLBACK_RATE = parseFloat(process.env.FALLBACK_EUR_RATE || '0.92'); // EUR per 1 USD
-    
+
     logger.info('[PricingService] Initialized with config:', {
       providerMarkup: `${this.PROVIDER_MARKUP * 100}%`,
       rebalancingFee: `${this.REBALANCING_FEE * 100}%`,
@@ -35,7 +35,7 @@ class PricingService {
    * Fetches the current USD to EUR exchange rate
    * Uses exchangerate-api.com (free tier: 1,500 requests/month)
    * Falls back to hardcoded rate if API unavailable
-   * 
+   *
    * @returns {Promise<number>} Exchange rate (EUR per 1 USD)
    */
   async getExchangeRate() {
@@ -76,13 +76,13 @@ class PricingService {
   /**
    * Calculates EUR cost for token usage
    * Primary currency is EUR, but we calculate and store both USD and EUR
-   * 
+   *
    * Formula:
    * 1. costUSD = (tokens / 1,000,000) * rateUSD
    * 2. costWithMarkup = costUSD * (1 + providerMarkup)
    * 3. costWithFees = costWithMarkup * (1 + rebalancingFee)
    * 4. costEUR = costWithFees * exchangeRate
-   * 
+   *
    * @param {Object} params
    * @param {number} params.tokens - Number of tokens used
    * @param {number} params.rateUSD - USD rate per 1M tokens (from provider pricing)
@@ -133,28 +133,28 @@ class PricingService {
   /**
    * Converts EUR to token credits for backward compatibility
    * 1,000,000 credits = €1.00
-   * 
+   *
    * @param {number} costEUR - Cost in EUR
    * @returns {number} Token credits
    */
   eurToTokenCredits(costEUR) {
-    return costEUR * 1_000_000;
+    return costEUR * 1000000;
   }
 
   /**
    * Converts token credits to EUR
    * 1,000,000 credits = €1.00
-   * 
+   *
    * @param {number} credits - Token credits
    * @returns {number} Cost in EUR
    */
   tokenCreditsToEur(credits) {
-    return credits / 1_000_000;
+    return credits / 1000000;
   }
 
   /**
    * Manually set exchange rate (for testing or manual override)
-   * 
+   *
    * @param {number} rate - EUR per 1 USD
    */
   setExchangeRate(rate) {
@@ -165,7 +165,7 @@ class PricingService {
 
   /**
    * Get current configuration
-   * 
+   *
    * @returns {Object} Current pricing configuration
    */
   getConfig() {

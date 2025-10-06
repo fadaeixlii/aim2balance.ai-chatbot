@@ -1,86 +1,140 @@
-# aim2balance.ai: EU-Hosted Multi-Model Chat Platform
+# aim2balance.ai Documentation
 
-**One-liner:** Multi-model AI chat with built-in impact metering and automatic ecological rebalancing.
+**One-liner:** EU-hosted multi-model AI chat with EUR-based billing and environmental impact tracking.
 
-This document outlines the plan to build an EU-hosted, open-source chat platform by forking LibreChat. The platform will integrate footprint accounting (energy/water consumption converted to m² of restored ecosystems) and manage monthly donations to Bergwaldprojekt.
+---
 
-## 1. Primary Goals (MVP)
+## 🚀 Quick Start
 
-- **Multi-Model Chat:** Support for OpenAI, Anthropic, Google, Groq, OpenRouter, and local models via Ollama, all routed through a central proxy.
-- **Dynamic Billing System:** A prepaid credit wallet (€20/month top-up), per-request spend enforcement, and a configurable markup (+15% margin + 2-3% rebalancing fee).
-- **Impact Pipeline:** Capture per-request telemetry to estimate energy, water, and CO₂ usage, convert it to m² restored, and display it to the user.
-- **Rebalancing Flow:** Automatically calculate and ledger monthly donations to Bergwaldprojekt.
-- **Privacy & EU Hosting:** Ensure all data and services are hosted in the EU with strong security measures.
+**New to the project?** Start here:
 
-## 2. High-Level Architecture
+2. **[EUR Implementation](./implementation/EUR_IMPLEMENTATION.md)** - EUR cost tracking details
+3. **[Configuration Guide](./guides/configuration_guide.md)** - Setup instructions
+4. **[Getting API Keys](./guides/getting_free_api_keys.md)** - Free API keys for testing
 
-- **UI/Web App:** A rebranded fork of LibreChat (React/Node).
-- **LLM Gateway:** **LiteLLM Proxy** to handle authentication, routing, cost tracking, and rate limits for all AI providers.
-- **Data Backend:** **Supabase** for application data (users, chats) and telemetry. S3-compatible storage for file uploads.
-- **Billing:** **Stripe Checkout & Webhooks** to manage the prepaid credit wallet.
-- **Impact Service:** A small Node.js worker to process telemetry from LiteLLM and calculate the environmental impact.
+---
 
-## 3. Data Model (MVP)
+## 📋 What's Been Implemented
 
-- `User`: {id, email, role, balances, prefs}
-- `Transaction`: {id, userId, type: topup|spend|refund, amountEUR, metadata}
-- `RequestEvent`: {id, userId, ts, model, provider, tokens_in/out, costEUR, kWh, L, CO₂e, m²}
-- `Donation`: {id, month, amountEUR, m², receiptURL, notes}
-- `Setting`: {key, value}
+### ✅ EUR Cost Tracking System
 
-## 4. Project Documentation
+- Primary currency: EUR (not USD)
+- Dual currency display (EUR + USD)
+- Provider markup (+15%)
+- Environmental rebalancing fee (+2.5%)
+- Real-time exchange rates
 
-This project is documented across several files, categorized by their purpose.
+**See:** [EUR_IMPLEMENTATION.md](./implementation/EUR_IMPLEMENTATION.md)
 
-### 1. High-Level Overviews
+### ✅ Smart Endpoint Filtering
 
-- **[aim2balance Concept](./aim2balance_concept.md)**: The high-level vision and goals for the project.
-- **[Features Summary](./features_summary.md)**: A summary of the key features for the MVP.
-- **[Tech Stack Summary](./tech_stack_summary.md)**: An overview of the technologies and services used.
+- Only show AI providers with configured API keys
+- Hide user API key settings
+- Clean, focused interface
 
-### 2. Architecture & Deep Dives
+**See:** [ENDPOINT_FILTERING.md](./implementation/ENDPOINT_FILTERING.md)
 
-- **[Architecture and Data Flow](./architecture_and_data_flow.md)**: A description of the system architecture and how data moves between components.
-- **[Backend Deep Dive](./backend_deep_dive.md)**: A deeper look into the backend components.
-- **[Frontend Deep Dive](./frontend_deep_dive.md)**: A deeper look into the frontend components.
+---
 
-### 3. Feature Analysis & Setup Guides
+## 📁 Documentation Structure
 
-- **[Configuration Guide](./configuration_guide.md)**: Complete reference for all LibreChat configuration options (.env and librechat.yaml), with simple and detailed explanations for each setting.
-- **[Getting Free API Keys](./getting_free_api_keys.md)**: Step-by-step guide to obtain free API keys from Google Gemini, OpenRouter, Groq, and Anthropic for development and testing.
-- **[Authentication Flow](./authentication_flow.md)**: Details on the user authentication and session management process.
-- **[Social Logins Setup](./social_logins_setup.md)**: Guide for enabling social logins (Google, GitHub, etc.).
-- **[Email & Notifications Setup](./email_and_notifications_setup.md)**: Guide for configuring transactional emails (Mailgun/SMTP).
-- **[Token Usage Analysis](./token_usage_analysis.md)**: A detailed breakdown of how LibreChat handles token counting and billing.
-- **[AI Model Integrations](./ai_model_integrations.md)**: Notes on integrating various AI models.
-- **[UI Mockups & Detailed Component List](./ui_mockups_and_components.md)**: Low-fidelity mockups and a detailed component list with props.
-- **[RAG & Vector Stores Analysis](./rag_and_vector_stores_analysis.md)**: A deep dive into the RAG API, vector databases, and file handling.
-- **[Agents & Tools Analysis](./agents_and_tools_analysis.md)**: A deep dive into the Agents framework, tools, and presets.
-- **[Comparison: LibreChat Agents vs. ChatGPT GPTs](./librechat_agents_vs_chatgpt_gpts.md)**: Analysis to guide the 'Projects UI' implementation.
-- **[Custom Instructions & Personalization Analysis](./custom_instructions_personalization.md)**: Research and implementation plan for a personalization feature.
-- **[RAG Cost Analysis](./rag_cost_analysis.md)**: A breakdown of the costs associated with the RAG system.
-- **[Dashboard Concept](./dashboard_concept.md)**: A detailed concept for the user dashboard, wallet, and usage monitoring features.
-- **[Analysis of `@librechat/client` Package](./packages_client_analysis.md)**: A deep dive into the shared frontend component library.
+```
+aim2balance_docs/
+├── README.md (this file)
+│
+├── implementation/          ⭐ Implementation Guides
+│   ├── MVP_IMPLEMENTATION.md       - Complete MVP guide
+│   ├── EUR_IMPLEMENTATION.md       - EUR cost tracking
+│   └── ENDPOINT_FILTERING.md       - Endpoint filtering
+│
+├── guides/                  📖 Setup & Configuration
+│   ├── configuration_guide.md      - Complete config reference
+│   ├── getting_free_api_keys.md    - Get API keys
+│   ├── social_logins_setup.md      - Social auth setup
+│   └── email_and_notifications_setup.md - Email config
+│
+├── analysis/                📊 Analysis & Planning
+│   ├── gap2_eur_cost_tracking_analysis.md - EUR analysis
+│   ├── balance_credits_explained.md - Balance system
+│   ├── task_usage_balance_ui.md    - Usage/balance mapping
+│   ├── aim2balance_concept.md      - Project vision
+│   ├── features_summary.md         - Feature overview
+│   └── dashboard_concept.md        - Dashboard design
+│
+├── reference/               📚 LibreChat Reference
+│   ├── architecture_and_data_flow.md - System architecture
+│   ├── backend_deep_dive.md        - Backend components
+│   ├── frontend_deep_dive.md       - Frontend components
+│   ├── authentication_flow.md      - Authentication
+│   ├── token_usage_analysis.md     - Token tracking
+│   ├── agents_and_tools_analysis.md - Agents framework
+│   └── rag_and_vector_stores_analysis.md - RAG system
+│
+└── archive/                 🗂️ Old/Superseded Docs
+    └── (21 archived files)
+```
 
-### 4. Implementation Guides
+---
 
-- **[Module Plan](./module_plan.md)**: The overall plan for the project's modules.
-- **[Kick-off Research: LiteLLM Integration](./kickoff_research_litellm.md)**: Initial spike to validate the LiteLLM-LibreChat integration.
-- **[Kick-off Research: UI/UX Audit](./kickoff_research_ui.md)**: Audit of the LibreChat UI to identify extension points.
-- **[UI/UX Audit for Dashboard Integration](./ui_ux_audit.md)**: A focused audit to identify integration points for the user dashboard.
-- **[Dashboard Implementation Roadmap](./dashboard_implementation_roadmap.md)**: The main epic and roadmap for building the user dashboard.
-- **[Backend Implementation Guide](./implementation_backend_litellm.md)**: Guide for setting up the LLM gateway and the Node.js impact worker.
-- **[Frontend Implementation Guide](./implementation_frontend_dashboard.md)**: Guide for building the user-facing dashboard and wallet UI.
-- **[Billing Implementation Guide](./implementation_billing_stripe.md)**: Guide for integrating Stripe and managing the credit system.
+## 🎯 Implementation Status
 
-### 5. Active Tasks
+### ✅ Completed Features
 
-- **[Task: Usage/Balance Mapping & UI Component](./task_usage_balance_ui.md)**: Comprehensive task breakdown for mapping LibreChat's current usage/balance logic to aim2balance.ai's multi-tenant cost + environmental metering requirements, including gap analysis and UI component implementation.
-- **[Gap 2: EUR Cost Tracking Analysis](./gap2_eur_cost_tracking_analysis.md)**: Detailed analysis of current token tracking implementation and comprehensive plan for implementing EUR-based cost tracking with provider markup and rebalancing fees.
-- **[Balance & Credits System Explained](./balance_credits_explained.md)**: Simple explanation of how the balance and credits system works, including database structure, transaction flow, and user balance creation.
+- **EUR Cost Tracking** - All costs in EUR with USD display
+- **Balance Display** - Dual currency in UI
+- **Endpoint Filtering** - Only show configured providers
+- **Exchange Rates** - Real-time with 24h caching
+- **Provider Markup** - +15% configurable
+- **Rebalancing Fee** - +2.5% for environmental contribution
 
-### 6. Archived & Legacy Guides
+### ⏳ Planned Features
 
-- **[Generic Backend Implementation](./implementation_backend.md)**: Older backend implementation notes.
-- **[Generic Frontend Implementation](./implementation_frontend.md)**: Older frontend implementation notes.
-- **[Generic Billing Implementation](./implementation_billing.md)**: Older billing implementation notes.
+- **Impact Pipeline** - Track energy/water/CO₂ usage
+- **Dashboard** - Usage metrics and sustainability tracking
+- **Rebalancing Flow** - Automatic Bergwaldprojekt donations
+
+---
+
+## 📖 Quick Links
+
+### For Developers
+
+- **[MVP Guide](./implementation/MVP_IMPLEMENTATION.md)** - Complete implementation overview
+- **[EUR Implementation](./implementation/EUR_IMPLEMENTATION.md)** - EUR cost tracking details
+- **[Endpoint Filtering](./implementation/ENDPOINT_FILTERING.md)** - Provider filtering
+
+### For Setup
+
+- **[Configuration](./guides/configuration_guide.md)** - Complete config reference
+- **[API Keys](./guides/getting_free_api_keys.md)** - Get free API keys
+- **[Social Logins](./guides/social_logins_setup.md)** - Setup OAuth
+- **[Email Setup](./guides/email_and_notifications_setup.md)** - Configure emails
+
+### For Analysis
+
+- **[EUR Analysis](./analysis/gap2_eur_cost_tracking_analysis.md)** - Original EUR analysis
+- **[Balance System](./analysis/balance_credits_explained.md)** - How balance works
+- **[Project Vision](./analysis/aim2balance_concept.md)** - Project goals
+- **[Dashboard Concept](./analysis/dashboard_concept.md)** - Dashboard design
+
+### For Reference
+
+- **[Architecture](./reference/architecture_and_data_flow.md)** - System architecture
+- **[Backend](./reference/backend_deep_dive.md)** - Backend components
+- **[Frontend](./reference/frontend_deep_dive.md)** - Frontend components
+- **[Authentication](./reference/authentication_flow.md)** - Auth flow
+- **[Agents](./reference/agents_and_tools_analysis.md)** - Agents framework
+
+---
+
+## 🚀 Getting Started
+
+1. **Read:** [implementation/MVP_IMPLEMENTATION.md](./implementation/MVP_IMPLEMENTATION.md)
+2. **Configure:** Follow [guides/configuration_guide.md](./guides/configuration_guide.md)
+3. **Get API Keys:** Use [guides/getting_free_api_keys.md](./guides/getting_free_api_keys.md)
+4. **Test:** Follow testing guide in MVP_IMPLEMENTATION.md
+
+---
+
+**Last Updated:** 2025-10-06  
+**Status:** ✅ Organized & Ready for Development
